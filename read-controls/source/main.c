@@ -12,6 +12,16 @@ void printTitle()
     printf("\x1b[7;1HRight stick position:\n");
 };
 
+// 清除指定行数
+void clearLines(int startLine , int endLine)
+{
+    int i;
+    for(i = startLine ; i < endLine ; ++i)
+    {
+        printf("\x1b[%d;1H\x1b[K", i);
+    }
+};
+
 // https://switchbrew.github.io/libnx/hid_8h.html#a218ac0c6184a8e98e58c45fe64c3668bac70da0a5250487aade1692c46e630ce9
 // 检测当前按下的按键是不是摇杆
 bool checkStick(u64 kDown)
@@ -96,8 +106,7 @@ int main(int argc, char* argv[])
         {
             if(kDown & BIT(i)) 
             {
-                consoleClear();
-                printTitle();
+                clearLines(10 , 20);
                 len = 10;
                 if(tempIndex < 10){
                     strcpy(temp[tempIndex++] , keysNames[i]);
