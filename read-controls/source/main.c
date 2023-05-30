@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
         {
             if(kDown & BIT(i)) 
             {
-                clearLines(10 , 20);
+                clearLines(10 , 30);
                 len = 10;
                 if(tempIndex < 10){
                     strcpy(temp[tempIndex++] , keysNames[i]);
