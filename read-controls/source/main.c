@@ -4,6 +4,8 @@
 
 #include <switch.h>
 
+#define START_LINE 10
+
 void printTitle()
 {
     printf("CHECK CONTROLS\n\n");
@@ -68,7 +70,7 @@ int main(int argc, char* argv[])
     u64 startTime = 0;
     int exitProgram = 0;
     //定位输出按键的行号，确保可以换行输出按键信息
-    int len = 10;
+    int len = START_LINE;
 
     printTitle();
 
@@ -100,14 +102,14 @@ int main(int argc, char* argv[])
             if(elapsedTimeSeconds >= 2) exitProgram = 1;
         }
         
-        // ===========================按键模块===========================
+        // ===========================按键===========================
         int i;
         for (i = 0; i < 28; i++)
         {
             if(kDown & BIT(i)) 
             {
                 clearLines(10 , 30);
-                len = 10;
+                len = START_LINE;
                 if(tempIndex < 10){
                     strcpy(temp[tempIndex++] , keysNames[i]);
                 }else{
@@ -118,18 +120,34 @@ int main(int argc, char* argv[])
                 }
                     for (int i = 0; i < 10; ++i)
                     {
+                        printf("\x1b[0m");
                         printf("\x1b[%d;1H%s \n\n" , len , temp[i]);
                         len += 2;
                     }
             }
         }
 
-        // ===========================摇杆模块===========================
+        // ===========================摇杆===========================
         HidAnalogStickState analog_stick_l = padGetStickPos(&pad, 0);
         HidAnalogStickState analog_stick_r = padGetStickPos(&pad, 1);
 
-        printf("\x1b[6;1H%06d; %06d\n", analog_stick_l.x, analog_stick_l.y);
-        printf("\x1b[8;1H%06d; %06d\n\n", analog_stick_r.x, analog_stick_r.y);
+        if(analog_stick_l.x >= 30700
+            || analog_stick_l.x <= -30700
+            || analog_stick_l.y >= 30700
+            || analog_stick_l.y <= -30700
+            || analog_stick_r.x >= 30700
+            || analog_stick_r.x <= -30700
+            || analog_stick_r.y >= 30700
+            || analog_stick_r.y <= -30700){
+            printf("\x1b[32m");
+            printf("\x1b[6;1H%06d; %06d\n", analog_stick_l.x, analog_stick_l.y);
+            printf("\x1b[8;1H%06d; %06d\n\n", analog_stick_r.x, analog_stick_r.y);
+        }else{
+            printf("\x1b[0m");
+            printf("\x1b[6;1H%06d; %06d\n", analog_stick_l.x, analog_stick_l.y);
+            printf("\x1b[8;1H%06d; %06d\n\n", analog_stick_r.x, analog_stick_r.y);
+        }
+        
 
         // ===========================退出程序===========================
         if (exitProgram)
